@@ -38,8 +38,16 @@ export default withMT({
           800: "#d84315",
           900: "#bf360c",
         },
-        orange:"#f1774b",
-        ocean_green:"#49ab92",
+        orange:{
+          10:"#faf6f5",
+          50:"#f5eeeb",
+          100:"#ed8153",},
+        deep_green:"#4fc978",
+        ocean_green:{
+          50:"#49ab92",
+          100:"#27b390"
+        
+        },
         ash:"#e6eae8",
         cyan:"#8ab5aa",
         light_blue:"#b4c9ca",

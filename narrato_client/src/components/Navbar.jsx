@@ -117,7 +117,7 @@ export function NavbarWithSearch() {
   );
  
   return (
-    <Navbar className="mx-auto max-w-screen-xl px-4 py-2 lg:px-8 lg:py-4">
+    <Navbar className="mx-auto max-w-screen-xl px-4 py-2 lg:px-8 lg:py-4 bg-orange-10">
       <div className="container mx-auto flex flex-wrap items-center justify-between text-blue-gray-900">
       <div className="flex items-center">
         <img 
@@ -130,7 +130,7 @@ export function NavbarWithSearch() {
         <Typography
           as="a"
           href="#"
-          className="mr-4 cursor-pointer py-1.5 font-bold text-2xl"
+          className="mr-4 cursor-pointer py-1.5 font-bold text-2xl text-ocean_green-50"
         >
           Narrato
         </Typography></div>
@@ -170,9 +170,35 @@ export function NavbarWithSearch() {
               </svg>
             </div>
           </div>
-          <Button size="md" className="rounded-lg ">
+          {/* <Button size="md" className="rounded-lg bg-orange ">
             Search
-          </Button>
+          </Button> */}
+          <div className="flex items-center gap-x-1">
+             
+          <Button 
+  variant="outlined" 
+  
+  size="md" 
+  className="mt-1 rounded-lg sm:mt-0
+    border-orange-100
+    text-orange-100
+    hover:bg-deep_orange-500
+    hover:text-white"
+>
+  Search
+</Button>
+<Button 
+  variant="fullfilled" 
+  size="md" 
+  className="mt-1 rounded-lg sm:mt-0 bg-ocean_green-50
+    text-white
+    hover:bg-ocean_green-100
+    hover:text-white"
+>
+  Search
+</Button>
+
+</div>
         </div>
         <IconButton
           variant="text"
@@ -250,9 +276,21 @@ export function NavbarWithSearch() {
                 </svg>
               </div>
             </div>
-            <Button size="md" className="mt-1 rounded-lg sm:mt-0">
+            {/* <Button size="md" className="mt-1 bg-orange rounded-lg sm:mt-0 " >
               Search
-            </Button>
+            </Button> */}
+                   <Button 
+  variant="outlined" 
+  
+  size="sm" 
+  className="mt-1 rounded-lg sm:mt-0
+    border-orange-100
+    text-orange-100
+    hover:bg-deep_orange-500
+    hover:text-white"
+>
+  Search
+</Button>
           </div>
         </div>
       </MobileNav>
