@@ -222,7 +222,7 @@ export function NavbarWithSearch() {
           <div className="hidden items-center gap-x-2 lg:flex">
           <div className="relative flex w-full gap-2 md:w-max">
   <div className="flex items-center gap-x-1">
-             
+            <a href="/signup">
              <Button 
      variant="outlined" 
      
@@ -234,7 +234,8 @@ export function NavbarWithSearch() {
        hover:text-white"
    >
      Signup
-   </Button>
+   </Button></a> 
+   <a href="/login">
 <Button 
   variant="fullfilled" 
   size="md" 
@@ -244,7 +245,7 @@ export function NavbarWithSearch() {
     hover:text-white"
 >
   Login
-</Button></div></div></div>
+</Button></a> </div></div></div>
 </>)}
 
 
@@ -358,6 +359,7 @@ export function NavbarWithSearch() {
         </>):(<>
         
           <div className="flex items-center gap-x-1">
+<a href="/signup"></a>
   <Button  variant="outlined" 
     size="sm" 
   className="mt-1 rounded-lg sm:mt-0
@@ -366,8 +368,9 @@ export function NavbarWithSearch() {
     hover:bg-deep_orange-500
     hover:text-white"
 >
-  Search
+ Signup
 </Button>
+<a href="/login">
  <Button 
   variant="fullfilled" 
   size="sm" 
@@ -377,7 +380,7 @@ export function NavbarWithSearch() {
     hover:text-white"
 >
   Login
-</Button></div></>)}
+</Button></a></div></>)}
        
       </MobileNav>
     </Navbar>
