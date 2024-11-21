@@ -5,6 +5,7 @@ import Layout from './components/Layout';
 import Signup from './components/Signup';
 import Login from './components/Login';
 import { Dashboard } from './components/Dashboard';
+import { HomeProtectedRoute } from './routes/HomeProtectedRoute';
 function App() {
 
   return (
@@ -15,7 +16,7 @@ function App() {
        <Route path="" element={<Layout/>}></Route>
        <Route path="/signup" element={<Signup/>}></Route>
        <Route path="/login" element={<Login/>}></Route>
-       <Route path="/dashboard" element={<Dashboard/>}></Route>
+       <Route path="/dashboard" element={<HomeProtectedRoute><Dashboard/></HomeProtectedRoute>}></Route>
         </Routes></BrowserRouter>  
     </>
   )

@@ -10,6 +10,11 @@ import {
 } from "@material-tailwind/react";
 import { Link } from 'react-router-dom';
 import Layout from './Layout';
+import { loginUser, selectAuthError,selectAuthLoading } from '../app/slice/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+
 export function Login() {
   const [formData, setFormData] = useState({
     email: '',
@@ -37,14 +42,26 @@ export function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     if (validateForm()) {
+//       // Submit form logic here
+//       console.log('Login submitted', formData);
+//     }
+//   };
+const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Submit form logic here
-      console.log('Login submitted', formData);
+    try {
+      // Using the loginUser thunk from your slice
+      if (validateForm()){
+        const resultAction = await dispatch(loginUser(formData)).unwrap();
+        navigate('/dashboard');
+      } 
+    } catch (err) {
+      // Redux Toolkit will handle the error state
+      console.error('Login failed:', err);
     }
   };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -52,6 +69,10 @@ export function Login() {
       [name]: value
     }));
   };
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const loading = useSelector(selectAuthLoading);
+  const reduxError = useSelector(selectAuthError);
 
   return (
     <Layout>
@@ -98,15 +119,17 @@ export function Login() {
         </CardBody>
         <CardFooter className="pt-0">
           <Button 
-          className="mt-1 rounded-lg sm:mt-0 bg-ocean_green-50
+          className={`mt-1 rounded-lg sm:mt-0 bg-ocean_green-50
           text-white
           hover:bg-ocean_green-100
-          hover:text-white"
+          hover:text-white ${loading ? 'opacity-50 cursor-not-allowed' : ''}
+          `}
             variant="fulfilled" 
+            disabled={loading}
             fullWidth 
             onClick={handleSubmit}
           >
-            Log In
+            {loading ? 'Logging in...' : 'Login'}
           </Button>
           <Typography variant="small" className="mt-6 flex justify-center">
             Don't have an account?{" "}

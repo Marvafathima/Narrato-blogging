@@ -24,6 +24,7 @@ export function Signup() {
     profile_pic: null
   });
  const dispatch=useDispatch()
+ const navigate=useNavigate()
   const [errors, setErrors] = useState({});
   const loading = useSelector(selectAuthLoading);
   const validateForm = () => {
@@ -71,26 +72,51 @@ const handleSubmit = async (e) => {
     if (!validateForm()) return;
 
     const formDataToSend = new FormData();
-    Object.keys(formData).forEach(key => {
-      if (key === 'profile_pic') {
-        if (formData[key]) {
-          formDataToSend.append(key, formData[key]);
-        }
-      } else {
-        formDataToSend.append(key, formData[key]);
-      }
-    });
+    
+    // Explicitly add each field to ensure no blanks
+    if (formData.email) formDataToSend.append('email', formData.email);
+    if (formData.username) formDataToSend.append('username', formData.username);
+    if (formData.password) formDataToSend.append('password', formData.password);
+    if (formData.password2) formDataToSend.append('password2', formData.password2);
+    
+    // Handle profile picture separately
+    if (formData.profile_pic) {
+      formDataToSend.append('profile_pic', formData.profile_pic);
+    }
 
     try {
-        console.log("form data to be sned ",formDataToSend)
+        console.log("Form data to be sent:", Object.fromEntries(formDataToSend)); // Convert to object for easier logging
         const resultAction = await dispatch(signupUser(formDataToSend)).unwrap();
-         navigate('/dashboard')
-          
+        navigate('/dashboard');
     } catch (err) {
-      // Error is handled by the slice
-      console.error('Signup failed:', err);
+        console.error('Signup failed:', err);
     }
   };
+// const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!validateForm()) return;
+
+//     const formDataToSend = new FormData();
+//     Object.keys(formData).forEach(key => {
+//       if (key === 'profile_pic') {
+//         if (formData[key]) {
+//           formDataToSend.append(key, formData[key]);
+//         }
+//       } else {
+//         formDataToSend.append(key, formData[key]);
+//       }
+//     });
+
+//     try {
+//         console.log("form data to be sned ",formDataToSend)
+//         const resultAction = await dispatch(signupUser(formDataToSend)).unwrap();
+//          navigate('/dashboard')
+          
+//     } catch (err) {
+//       // Error is handled by the slice
+//       console.error('Signup failed:', err);
+//     }
+//   };
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -182,10 +208,13 @@ const handleSubmit = async (e) => {
         <CardFooter className="pt-0">
           <Button 
           disabled={loading}
-          className="mt-1 rounded-lg sm:mt-0 bg-ocean_green-50
+          className={`mt-1 rounded-lg sm:mt-0 bg-ocean_green-50
           text-white
           hover:bg-ocean_green-100
-          hover:text-white"
+          hover:text-white
+          ${loading ? 'opacity-50 cursor-not-allowed' : ''}`
+          
+        }
             variant="fulfilled" 
             fullWidth 
             onClick={handleSubmit}
