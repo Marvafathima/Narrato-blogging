@@ -7,10 +7,17 @@ import {
   IconButton,
   Input,
 } from "@material-tailwind/react";
- 
+import { useSelector,useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { selectIsAuthenticated,selectCurrentUser,logout } from "../app/slice/authSlice";
+
+
 export function NavbarWithSearch() {
   const [openNav, setOpenNav] = React.useState(false);
- 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+    const user = useSelector(selectCurrentUser);
   React.useEffect(() => {
     window.addEventListener(
       "resize",
@@ -20,6 +27,7 @@ export function NavbarWithSearch() {
  
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+     {isAuthenticated ==true ? (<>
       <Typography
         as="li"
         variant="small"
@@ -39,8 +47,8 @@ export function NavbarWithSearch() {
           />
         </svg>
  
-        <a href="#" className="flex items-center">
-          Pages
+        <a href="#" className="flex items-center font-extralight text-lg">
+          Explore
         </a>
       </Typography>
       <Typography
@@ -63,8 +71,8 @@ export function NavbarWithSearch() {
             fill="#90A4AE"
           />
         </svg>
-        <a href="#" className="flex items-center">
-          Account
+        <a href="#" className="flex items-center font-extralight text-lg">
+          My Account
         </a>
       </Typography>
       <Typography
@@ -85,8 +93,8 @@ export function NavbarWithSearch() {
             fill="#90A4AE"
           />
         </svg>
-        <a href="#" className="flex items-center">
-          Blocks
+        <a href="#" className="flex items-center font-extralight text-lg">
+          Post
         </a>
       </Typography>
       <Typography
@@ -109,10 +117,15 @@ export function NavbarWithSearch() {
             fill="#90A4AE"
           />
         </svg>
-        <a href="#" className="flex items-center">
-          Docs
+        <a href="#" className="flex items-center font-extralight text-lg">
+          My Posts
         </a>
       </Typography>
+     
+     </>):(<>
+     
+     </>) }
+      
     </ul>
   );
  
@@ -130,11 +143,13 @@ export function NavbarWithSearch() {
         <Typography
           as="a"
           href="#"
-          className="mr-4 cursor-pointer py-1.5 font-bold text-2xl text-ocean_green-50"
+          className="mr-4 cursor-pointer py-1.5 font-medium text-2xl text-ocean_green-50"
         >
           Narrato
         </Typography></div>
+
         <div className="hidden lg:block">{navList}</div>
+        {isAuthenticated==true?(<>
         <div className="hidden items-center gap-x-2 lg:flex">
           <div className="relative flex w-full gap-2 md:w-max">
             <Input
@@ -195,11 +210,45 @@ export function NavbarWithSearch() {
     hover:bg-ocean_green-100
     hover:text-white"
 >
-  Search
+  Logout
 </Button>
+
+
 
 </div>
         </div>
+
+        </>):(<>
+          <div className="hidden items-center gap-x-2 lg:flex">
+          <div className="relative flex w-full gap-2 md:w-max">
+  <div className="flex items-center gap-x-1">
+             
+             <Button 
+     variant="outlined" 
+     
+     size="md" 
+     className="mt-1 rounded-lg sm:mt-0
+       border-orange-100
+       text-orange-100
+       hover:bg-deep_orange-500
+       hover:text-white"
+   >
+     Signup
+   </Button>
+<Button 
+  variant="fullfilled" 
+  size="md" 
+  className="mt-1 rounded-lg sm:mt-0 bg-ocean_green-50
+    text-white
+    hover:bg-ocean_green-100
+    hover:text-white"
+>
+  Login
+</Button></div></div></div>
+</>)}
+
+
+
         <IconButton
           variant="text"
           className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
@@ -239,7 +288,8 @@ export function NavbarWithSearch() {
         </IconButton>
       </div>
       <MobileNav open={openNav}>
-        <div className="container mx-auto">
+        {isAuthenticated==true?(<>
+          <div className="container mx-auto">
           {navList}
           <div className="flex flex-col gap-x-2 sm:flex-row sm:items-center">
             <div className="relative w-full gap-2 md:w-max">
@@ -279,6 +329,7 @@ export function NavbarWithSearch() {
             {/* <Button size="md" className="mt-1 bg-orange rounded-lg sm:mt-0 " >
               Search
             </Button> */}
+            <div className="flex items-center gap-x-1">
                    <Button 
   variant="outlined" 
   
@@ -291,8 +342,43 @@ export function NavbarWithSearch() {
 >
   Search
 </Button>
-          </div>
+<Button 
+  variant="fullfilled" 
+  size="sm" 
+  className="mt-1 rounded-lg sm:mt-0 bg-ocean_green-50
+    text-white
+    hover:bg-ocean_green-100
+    hover:text-white"
+>
+  Logout
+</Button>
+</div>
+   </div>
         </div>
+        </>):(<>
+        
+          <div className="flex items-center gap-x-1">
+  <Button  variant="outlined" 
+    size="sm" 
+  className="mt-1 rounded-lg sm:mt-0
+    border-orange-100
+    text-orange-100
+    hover:bg-deep_orange-500
+    hover:text-white"
+>
+  Search
+</Button>
+ <Button 
+  variant="fullfilled" 
+  size="sm" 
+  className="mt-1 rounded-lg sm:mt-0 bg-ocean_green-50
+    text-white
+    hover:bg-ocean_green-100
+    hover:text-white"
+>
+  Login
+</Button></div></>)}
+       
       </MobileNav>
     </Navbar>
   );
