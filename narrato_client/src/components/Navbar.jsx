@@ -18,6 +18,12 @@ export function NavbarWithSearch() {
   const navigate = useNavigate();
   const isAuthenticated = useSelector(selectIsAuthenticated);
     const user = useSelector(selectCurrentUser);
+
+    const handleLogout = () => {
+      dispatch(logout());
+      navigate('/');
+  };
+
   React.useEffect(() => {
     window.addEventListener(
       "resize",
@@ -209,6 +215,7 @@ export function NavbarWithSearch() {
     text-white
     hover:bg-ocean_green-100
     hover:text-white"
+  onClick={handleLogout}
 >
   Logout
 </Button>
@@ -350,6 +357,7 @@ export function NavbarWithSearch() {
     text-white
     hover:bg-ocean_green-100
     hover:text-white"
+    onClick={handleLogout}
 >
   Logout
 </Button>

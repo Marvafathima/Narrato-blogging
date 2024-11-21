@@ -6,6 +6,7 @@ import Signup from './components/Signup';
 import Login from './components/Login';
 import { Dashboard } from './components/Dashboard';
 import { HomeProtectedRoute } from './routes/HomeProtectedRoute';
+import { ProtectedRoute } from './routes/ProtectedRoute';
 function App() {
 
   return (
@@ -14,8 +15,8 @@ function App() {
        <Routes>
        <Route path="nav/" element={<NavbarWithSearch/>}></Route>
        <Route path="" element={<Layout/>}></Route>
-       <Route path="/signup" element={<Signup/>}></Route>
-       <Route path="/login" element={<Login/>}></Route>
+       <Route path="/signup" element={<ProtectedRoute><Signup/></ProtectedRoute>}></Route>
+       <Route path="/login" element={<ProtectedRoute><Login/></ProtectedRoute>}></Route>
        <Route path="/dashboard" element={<HomeProtectedRoute><Dashboard/></HomeProtectedRoute>}></Route>
         </Routes></BrowserRouter>  
     </>

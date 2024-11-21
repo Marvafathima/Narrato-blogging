@@ -6,5 +6,5 @@ export const ProtectedRoute = ({ children }) => {
 
 
     const isAuthenticated = useSelector(selectIsAuthenticated); 
-    return isAuthenticated ? <Navigate to="/signup" replace /> : children;
+    return isAuthenticated ? <Navigate to="/dashboard" replace /> : children;
 }
