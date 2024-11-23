@@ -13,7 +13,7 @@ import Layout from './Layout';
 import { loginUser, selectAuthError,selectAuthLoading } from '../app/slice/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
+import { fetchUserDetails } from '../app/slice/authSlice';
 
 export function Login() {
   const [formData, setFormData] = useState({
@@ -55,6 +55,7 @@ const handleSubmit = async (e) => {
       // Using the loginUser thunk from your slice
       if (validateForm()){
         const resultAction = await dispatch(loginUser(formData)).unwrap();
+        dispatch(fetchUserDetails())
         navigate('/dashboard');
       } 
     } catch (err) {

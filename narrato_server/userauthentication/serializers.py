@@ -36,3 +36,21 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['email'] = self.user.email
         data['username'] = self.user.username
         return data
+class UserDetialSerializer(serializers.ModelSerializer):
+    joined_at = serializers.DateTimeField( format="%Y-%m-%d", read_only=True)
+    profile_pic = serializers.SerializerMethodField()
+    class Meta:
+        model=User
+        fields=['id', 'username', 'email', 'profile_pic', 'joined_at']
+    def get_profile_pic(self, obj):
+        if obj.profile_pic:
+            try:
+                # Return the complete URL
+                request = self.context.get('request')
+                if request:
+                    return request.build_absolute_uri(obj.profile_pic.url)
+                return obj.profile_pic.url
+            except Exception as e:
+                print(f"Error getting profile pic URL: {e}")
+                return None
+        return None

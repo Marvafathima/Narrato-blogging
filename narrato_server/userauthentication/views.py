@@ -9,7 +9,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.contrib.auth import logout
 
 
-from .serializers import UserSignupSerializer, CustomTokenObtainPairSerializer
+from .serializers import UserSignupSerializer, CustomTokenObtainPairSerializer,UserDetialSerializer
 User = get_user_model()
 
 class SignupView(APIView):
@@ -32,14 +32,16 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
     
     def post(self, request):
-        try:
-            logout(request)
-            return Response(
-                {"message": "Successfully logged out."}, 
-                status=status.HTTP_200_OK
-            )
-        except Exception as e:
-            return Response(
-                {"error": "Something went wrong, please try again."}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        logout(request)
+        return Response(
+            {"message": "Successfully logged out."}, 
+            status=status.HTTP_200_OK
+        )
+
+class FetchUserDetailView(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def get(self,request):
+        serializer=UserDetialSerializer(request.user,context={'request': request})
+        print("\n\n\n\nsssssssssssssssssssss",serializer.data)
+        return Response(serializer.data)

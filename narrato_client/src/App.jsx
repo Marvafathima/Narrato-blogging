@@ -7,6 +7,7 @@ import Login from './components/Login';
 import { Dashboard } from './components/Dashboard';
 import { HomeProtectedRoute } from './routes/HomeProtectedRoute';
 import { ProtectedRoute } from './routes/ProtectedRoute';
+import UserProfile from './components/UserProfile';
 function App() {
 
   return (
@@ -17,7 +18,8 @@ function App() {
        <Route path="" element={<Layout/>}></Route>
        <Route path="/signup" element={<ProtectedRoute><Signup/></ProtectedRoute>}></Route>
        <Route path="/login" element={<ProtectedRoute><Login/></ProtectedRoute>}></Route>
-       <Route path="/dashboard" element={<HomeProtectedRoute><Dashboard/></HomeProtectedRoute>}></Route>
+       <Route path="/dashboard" element={<HomeProtectedRoute><UserProfile/></HomeProtectedRoute>}></Route>
+        
         </Routes></BrowserRouter>  
     </>
   )

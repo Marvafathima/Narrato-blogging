@@ -14,7 +14,7 @@ import { signupUser } from '../app/slice/authSlice';
 import { selectAuthLoading } from '../app/slice/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
+import { fetchUserDetails } from '../app/slice/authSlice';
 export function Signup() {
   const [formData, setFormData] = useState({
     email: '',
@@ -87,6 +87,7 @@ const handleSubmit = async (e) => {
     try {
         console.log("Form data to be sent:", Object.fromEntries(formDataToSend)); // Convert to object for easier logging
         const resultAction = await dispatch(signupUser(formDataToSend)).unwrap();
+        dispatch(fetchUserDetails())
         navigate('/dashboard');
     } catch (err) {
         console.error('Signup failed:', err);

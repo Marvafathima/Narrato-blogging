@@ -41,6 +41,24 @@ export const signupUser = createAsyncThunk(
   }
 );
 
+
+export const fetchUserDetails = createAsyncThunk(
+  'auth/fetchUserDetails',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { accessToken } = getState().auth;
+      const response = await axios.get(`${BASE_URL}my_detail/`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const loadAuthState = () => {
   try {
     const authState = localStorage.getItem('authState');
@@ -53,6 +71,8 @@ const loadAuthState = () => {
 const initialState = loadAuthState() || {
   user: null,
   accessToken: null,
+  userDetails: null, 
+  
   refreshToken: null,
   isAuthenticated: false,
   loading: false,
@@ -67,6 +87,7 @@ const authSlice = createSlice({
       state.user = null;
       state.accessToken = null;
       state.refreshToken = null;
+      state.userDetails = null; 
       state.isAuthenticated = false;
       state.error = null;
       localStorage.removeItem('authState');
@@ -115,6 +136,19 @@ const authSlice = createSlice({
       .addCase(signupUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || 'Signup failed';
+      })
+      .addCase(fetchUserDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.userDetails = action.payload;
+        localStorage.setItem('authState', JSON.stringify(state));
+      })
+      .addCase(fetchUserDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.detail || 'Failed to fetch user details';
       });
   }
 });
@@ -126,5 +160,5 @@ export const selectCurrentUser = (state) => state.auth.user;
 export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;
 export const selectAuthLoading = (state) => state.auth.loading;
 export const selectAuthError = (state) => state.auth.error;
-
+export const selectUserDetails = (state) => state.auth.userDetails;
 export default authSlice.reducer;
