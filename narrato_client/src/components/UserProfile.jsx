@@ -86,9 +86,9 @@ if (error){
             src={userDetails.profile_pic}
             alt="Profile" 
             size="xl" 
-            className="border-4 border-blue-500"
+            className="border-4 border-deep_orange-400"
           />
-          <button className="absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-1">
+          <button className="absolute bottom-0 right-0 bg-ocean_green-50 text-white rounded-full p-1">
             <Camera size={16} />
           </button>
         </div>
@@ -99,8 +99,8 @@ if (error){
             {userDetails.email}
           </Typography>
           <div className="flex gap-4 mt-2 justify-center md:justify-start">
-            <Button size="sm" variant="outlined" className="flex items-center gap-2">
-              <Edit size={16} /> Edit Profile
+            <Button size="sm" variant="outlined" className="flex items-center gap-2 text-ocean_green-50 border-ocean_green-100">
+              <Edit size={16} className='text-ocean_green-50  ring-offset-teal-400 '/> Edit Profile
             </Button>
           </div>
         </div>
@@ -111,7 +111,7 @@ if (error){
         <Typography variant="h5">My Posts</Typography>
         <Button 
           onClick={handleOpenPostDialog} 
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 bg-deep-orange-300 ring-offset-cyan"
         >
           <Plus size={16} /> Add Post
         </Button>
