@@ -8,10 +8,13 @@ import { Dashboard } from './components/Dashboard';
 import { HomeProtectedRoute } from './routes/HomeProtectedRoute';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import UserProfile from './components/UserProfile';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
 
   return (
     <>
+
        <BrowserRouter>
        <Routes>
        <Route path="nav/" element={<NavbarWithSearch/>}></Route>
@@ -21,6 +24,7 @@ function App() {
        <Route path="/dashboard" element={<HomeProtectedRoute><UserProfile/></HomeProtectedRoute>}></Route>
         
         </Routes></BrowserRouter>  
+        <ToastContainer/>
     </>
   )
 }

@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), 
     path('', include('userauthentication.urls')),
+     path('', include('bloghandler.urls')),
 ]
 
 if settings.DEBUG:

@@ -10,7 +10,7 @@ import {
 import { useSelector,useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectIsAuthenticated,selectCurrentUser,logout } from "../app/slice/authSlice";
-
+import { toast } from "react-toastify";
 
 export function NavbarWithSearch() {
   const [openNav, setOpenNav] = React.useState(false);
@@ -21,6 +21,7 @@ export function NavbarWithSearch() {
 
     const handleLogout = () => {
       dispatch(logout());
+      toast.success("logged out successfully")
       navigate('/');
   };
 

@@ -59,6 +59,30 @@ export const fetchUserDetails = createAsyncThunk(
   }
 );
 
+
+export const createBlogPost = createAsyncThunk(
+  'blog/createPost',
+  async (formData, { getState, rejectWithValue }) => {
+    try {
+      const { accessToken } = getState().auth;
+
+      const response = await axios.post(
+        `${BASE_URL}blog/create/`,
+        formData,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'multipart/form-data', // Important for file upload
+          }
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);  
 const loadAuthState = () => {
   try {
     const authState = localStorage.getItem('authState');

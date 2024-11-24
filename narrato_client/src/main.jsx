@@ -5,6 +5,7 @@ import App from './App.jsx'
 import { ThemeProvider } from "@material-tailwind/react";
 import { Provider } from 'react-redux'
 import { store } from './app/store.jsx';
+import 'react-toastify/dist/ReactToastify.css';
 createRoot(document.getElementById('root')).render(
 
   <StrictMode>
