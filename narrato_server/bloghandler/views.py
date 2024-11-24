@@ -5,7 +5,7 @@ from .models import Blog
 from .serializers import BlogSerializer, BlogCreateSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView
-
+from rest_framework.exceptions import AuthenticationFailed
 class BlogCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -23,4 +23,6 @@ class UserBlogsView(ListAPIView):
 
     def get_queryset(self):
         # Fetch blogs belonging to the requesting user
+        if not self.request.user.is_authenticated:
+            raise AuthenticationFailed(detail="Authentication failed.Please login again.")
         return Blog.objects.filter(user=self.request.user).order_by('-created_at')

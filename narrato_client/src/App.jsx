@@ -9,6 +9,7 @@ import { HomeProtectedRoute } from './routes/HomeProtectedRoute';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import UserProfile from './components/UserProfile';
 import { ToastContainer, toast } from 'react-toastify';
+import { UserPostGridPage } from './components/UserPostGridPage';
 import 'react-toastify/dist/ReactToastify.css';
 function App() {
 
@@ -22,7 +23,7 @@ function App() {
        <Route path="/signup" element={<ProtectedRoute><Signup/></ProtectedRoute>}></Route>
        <Route path="/login" element={<ProtectedRoute><Login/></ProtectedRoute>}></Route>
        <Route path="/dashboard" element={<HomeProtectedRoute><UserProfile/></HomeProtectedRoute>}></Route>
-        
+        <Route path="/my-blog" element={<HomeProtectedRoute><UserPostGridPage/></HomeProtectedRoute>}></Route>
         </Routes></BrowserRouter>  
         <ToastContainer/>
     </>

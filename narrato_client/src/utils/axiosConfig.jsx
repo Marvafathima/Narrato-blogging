@@ -63,10 +63,12 @@ api.interceptors.response.use(
           
         } catch (refreshError) {
           store.dispatch(logout());
+          window.location.href = '/';
           return Promise.reject(refreshError);
         }
       } else {
         store.dispatch(logout());
+        window.location.href = '/';
       }
     }
     

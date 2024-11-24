@@ -60,6 +60,7 @@ export const fetchUserDetails = createAsyncThunk(
 );
 
 
+
 export const createBlogPost = createAsyncThunk(
   'blog/createPost',
   async (formData, { getState, rejectWithValue }) => {
@@ -82,7 +83,32 @@ export const createBlogPost = createAsyncThunk(
       return rejectWithValue(error.response?.data || 'An error occurred');
     }
   }
-);  
+); 
+
+
+export const fetchUserBlogs = createAsyncThunk(
+  'blog/fetchUserBlogs',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { accessToken } = getState().auth;
+
+      const response = await axios.get(`${BASE_URL}my_blogs/`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || 'Failed to fetch user blogs'
+      );
+    }
+  }
+);
+
+
+
 const loadAuthState = () => {
   try {
     const authState = localStorage.getItem('authState');
@@ -96,7 +122,9 @@ const initialState = loadAuthState() || {
   user: null,
   accessToken: null,
   userDetails: null, 
-  
+  blogloading:false,
+  blogerror:null,
+  userBlogs:[],
   refreshToken: null,
   isAuthenticated: false,
   loading: false,
@@ -107,6 +135,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+   
     logout: (state) => {
       state.user = null;
       state.accessToken = null;
@@ -114,6 +143,7 @@ const authSlice = createSlice({
       state.userDetails = null; 
       state.isAuthenticated = false;
       state.error = null;
+      
       localStorage.removeItem('authState');
     },
     updateUser: (state, action) => {
@@ -173,6 +203,27 @@ const authSlice = createSlice({
       .addCase(fetchUserDetails.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.detail || 'Failed to fetch user details';
+      })
+      .addCase(fetchUserBlogs.pending, (state) => {
+        state.blogloading = true;
+        state.blogerror = null;
+      })
+      .addCase(fetchUserBlogs.fulfilled, (state, action) => {
+        state.blogloading = false;
+        state.userBlogs = action.payload;
+      })
+      .addCase(fetchUserBlogs.rejected, (state, action) => {
+        state.blogloading = false;
+        state.blogerror = action.payload?.detail
+        if (action.error?.message?.includes('401')) {
+          state.isAuthenticated = false;
+          state.user = null;
+          state.accessToken = null;
+          state.refreshToken = null;
+          state.userDetails = null;
+          state.userBlogs = [];
+          localStorage.removeItem('authState');
+        }
       });
   }
 });

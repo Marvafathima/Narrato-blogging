@@ -20,13 +20,13 @@ import { createBlogPost,fetchUserDetails, selectAuthError, selectAuthLoading, se
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import 'react-image-crop/dist/ReactCrop.css';
-
+import { useNavigate } from 'react-router-dom';
 const UserProfile = () => {
   const dispatch = useDispatch();
   const userDetails = useSelector(selectUserDetails);
   const loading = useSelector(selectAuthLoading);
   const error = useSelector(selectAuthError);
-  
+  const navigate=useNavigate();
   const [posts, setPosts] = useState([]);
   const [openPostDialog, setOpenPostDialog] = useState(false);
   const [newPost, setNewPost] = useState({
@@ -286,6 +286,8 @@ const handlePostSubmit = async () => {
       const result = await dispatch(createBlogPost(formData)).unwrap(); // Unwraps the result or throws an error
       toast.success("New post created successfully!");
       console.log("Post created:", result);
+      navigate("/my-blog")
+      
     } catch (error) {
       console.error("Error creating post:", error); // Log the error for debugging
       toast.error("Error creating post. Please try again.");
