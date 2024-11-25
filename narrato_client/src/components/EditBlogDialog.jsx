@@ -28,13 +28,15 @@ const EditBlogDialog = ({ open, handler, post, onSubmit }) => {
   const [rotation, setRotation] = useState(0);
   const [scale, setScale] = useState(1);
 
-  // Initialize form with existing post data
+ 
   useEffect(() => {
     if (post) {
       setEditPost({
         images: (post.post_images || []).map(img => ({
           preview: img.post_image,
-          file: null // We'll only update images that are changed
+          file: null,
+          isExisting: true, // Flag to identify existing images
+          id: img.id // Store the image ID if available
         })),
         description: post.description || '',
         hashtags: post.hashtags?.map(tag => tag.name) || [],
@@ -47,15 +49,17 @@ const EditBlogDialog = ({ open, handler, post, onSubmit }) => {
     const files = Array.from(e.target.files);
     const newImages = files.map(file => ({
       preview: URL.createObjectURL(file),
-      file: file
+      file: file,
+      isExisting: false
     }));
-    
+
     setEditPost(prev => ({
       ...prev,
       images: [...prev.images, ...newImages]
     }));
   };
 
+ 
   const handleEditImage = (index) => {
     setEditPost(prev => ({
       ...prev,
@@ -65,13 +69,23 @@ const EditBlogDialog = ({ open, handler, post, onSubmit }) => {
     setRotation(0);
     setScale(1);
   };
-
   const handleRemoveImage = (index) => {
-    setEditPost(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }));
+    setEditPost(prev => {
+      const newImages = [...prev.images];
+      
+      // Remove the image URL from browser memory if it's a new image
+      if (!newImages[index].isExisting) {
+        URL.revokeObjectURL(newImages[index].preview);
+      }
+      
+      newImages.splice(index, 1);
+      return {
+        ...prev,
+        images: newImages
+      };
+    });
   };
+ 
 
   const handleSaveEdit = () => {
     // Here you would typically apply the crop, rotation, and scale

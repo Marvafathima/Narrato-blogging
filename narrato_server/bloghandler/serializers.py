@@ -127,22 +127,11 @@ class BlogUpdateSerializer(serializers.ModelSerializer):
 
         # Handle images
         if images:
-            instance.post_images.all().delete()  # Remove old images
+            # instance.post_images.all().delete()  # Remove old images
             for image in images:
                 PostImage.objects.create(post=instance, post_image=image)
 
-        # Handle hashtags
-        # if raw_hashtags:
-        #     raw_hashtags = json.loads(raw_hashtags[0])  # Unpack nested stringified list
-
-        # hashtag_objects = []
-        # for hashtag_name in raw_hashtags:
-        #     hashtag_name = hashtag_name.strip('#').lower()
-        #     hashtag, created = Hashtag.objects.get_or_create(name=hashtag_name)
-        #     hashtag_objects.append(hashtag)
-
-        # instance.hashtags.set(hashtag_objects)
-        # Handle hashtags
+        
         hashtag_objects = []
         if raw_hashtags:
             print("\n\n\n\nrawhashtags",raw_hashtags)
