@@ -120,6 +120,7 @@ const BlogDetailView = () => {
         // Check response from API
         if (result) {
           toast.success(result.message || "Blog deleted successfully");
+          navigate('/my-blog')
         }
       }
     } catch (error) {

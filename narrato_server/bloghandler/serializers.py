@@ -84,9 +84,13 @@ class BlogUpdateSerializer(serializers.ModelSerializer):
         child=serializers.IntegerField(),  # Assuming these are image IDs
         required=False  # Optional for updates
     )
+    new_images = serializers.ListField(
+        child=serializers.ImageField(),
+        required=False  # Optional field for new images
+    )
     class Meta:
         model = Blog
-        fields = ['title', 'description', 'images', 'hashtags','removed_images','existing_images']
+        fields = ['title', 'description', 'images', 'hashtags','removed_images','existing_images','new_images']
 
    
     def update(self, instance, validated_data):
@@ -94,7 +98,7 @@ class BlogUpdateSerializer(serializers.ModelSerializer):
         images = validated_data.pop('images', [])
         raw_hashtags = validated_data.pop('hashtags', [])
         removed_image_ids = validated_data.pop('removed_images', []) 
-        
+        new_images= validated_data.pop('new_images', [])
          # Extract removed image IDs
         if removed_image_ids:
             instance.post_images.filter(id__in=removed_image_ids).delete()
@@ -105,12 +109,12 @@ class BlogUpdateSerializer(serializers.ModelSerializer):
         instance.save()
 
         # Handle images
-        if images:
-            instance.post_images.all().delete()  # Remove old images
-            for image in images:
+       
+        if new_images:
+              # Remove old images
+            for image in new_images:
                 PostImage.objects.create(post=instance, post_image=image)
 
-        
         hashtag_objects = []
         if raw_hashtags:
             print("\n\n\n\nrawhashtags",raw_hashtags)
