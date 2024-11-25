@@ -27,7 +27,7 @@ const EditBlogDialog = ({ open, handler, post, onSubmit }) => {
   });
   const [rotation, setRotation] = useState(0);
   const [scale, setScale] = useState(1);
-
+  const [removedImages, setRemovedImages] = useState([]);
  
   useEffect(() => {
     if (post) {
@@ -69,23 +69,51 @@ const EditBlogDialog = ({ open, handler, post, onSubmit }) => {
     setRotation(0);
     setScale(1);
   };
-  const handleRemoveImage = (index) => {
-    setEditPost(prev => {
-      const newImages = [...prev.images];
+  // const handleRemoveImage = (index) => {
+  //   setEditPost(prev => {
+  //     const newImages = [...prev.images];
       
-      // Remove the image URL from browser memory if it's a new image
-      if (!newImages[index].isExisting) {
+  //     // Remove the image URL from browser memory if it's a new image
+  //     if (!newImages[index].isExisting) {
+  //       URL.revokeObjectURL(newImages[index].preview);
+  //     }
+      
+  //     newImages.splice(index, 1);
+  //     return {
+  //       ...prev,
+  //       images: newImages
+  //     };
+  //   });
+  // };
+  const handleRemoveImage = (index) => {
+    
+    setEditPost((prev) => {
+      const newImages = [...prev.images];
+      console.log("index is getting removed from newimages",index,newImages[index].id)
+      // If it's an existing image, add its ID to the removedImages list
+      // setRemovedImages((prevRemoved) => [...prevRemoved, newImages[index].id]);
+      if (newImages[index].isExisting) {
+       
+        setRemovedImages((prevRemoved) => [...prevRemoved, newImages[index].id]);
+       
+      } else {
+        // Revoke object URL for new images
         URL.revokeObjectURL(newImages[index].preview);
       }
-      
+  
+      // Remove the image from the array
       newImages.splice(index, 1);
+    
       return {
         ...prev,
-        images: newImages
+        images: newImages,
       };
     });
   };
- 
+  
+  useEffect(() => {
+    console.log("yes")
+  }, [removedImages]);
 
   const handleSaveEdit = () => {
     // Here you would typically apply the crop, rotation, and scale
@@ -129,12 +157,28 @@ const EditBlogDialog = ({ open, handler, post, onSubmit }) => {
     });
     
     // Only append images that have associated files (new or modified images)
-    editPost.images.forEach((img, index) => {
-      if (img.file) {
-        console.log("imgae fiel present")
-        formData.append(`images`, img.file);
-      }
-    });
+    // editPost.images.forEach((img, index) => {
+    //   if (img.file) {
+    //     console.log("imgae fiel present")
+    //     formData.append(`images`, img.file);
+    //   }
+    // });
+    // Include only images currently in the `images` array
+  editPost.images.forEach((img, index) => {
+    if (img.isExisting) {
+      console.log("existing images",img.id)
+      // Include existing images by ID or any necessary identifier
+      formData.append('existing_images', img.id); // Use 'existing_images' to send existing image IDs
+    } else if (img.file) {
+      // Include new images with file data
+      formData.append('new_images', img.file); // Use 'new_images' to send new image files
+    }
+  });
+  // Include removed image IDs
+  removedImages.forEach((id) => {
+    console.log("remove image id:",id)
+    formData.append('removed_images', id);
+  });
     for (let pair of formData.entries()) {
       console.log("form data in form",pair[0], pair[1]); // This will show the actual content
     }

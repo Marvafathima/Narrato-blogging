@@ -34,6 +34,7 @@ class BlogManageView(APIView):
         except Blog.DoesNotExist:
             return Response({'error': 'Blog not found or not authorized'}, status=status.HTTP_404_NOT_FOUND)
 
+        print("requested data is",request.data)
         serializer = BlogUpdateSerializer(blog, data=request.data, context={'request': request})
         if serializer.is_valid():
             updated_blog = serializer.save()

@@ -76,49 +76,28 @@ class BlogUpdateSerializer(serializers.ModelSerializer):
         child=serializers.CharField(),
         required=False  # Optional for updates
     )
-
+    existing_images = serializers.ListField(
+        child=serializers.IntegerField(),  # Assuming these are image IDs
+        required=False  # Optional for updates
+    )
+    removed_images = serializers.ListField(
+        child=serializers.IntegerField(),  # Assuming these are image IDs
+        required=False  # Optional for updates
+    )
     class Meta:
         model = Blog
-        fields = ['title', 'description', 'images', 'hashtags']
+        fields = ['title', 'description', 'images', 'hashtags','removed_images','existing_images']
 
-    # def update(self, instance, validated_data):
-    #     # Extract data
-    #     print("my validated dataaa:\n\n\n\n",validated_data)
-    #     images = validated_data.pop('images', [])
-    #     raw_hashtags = validated_data.pop('hashtags', [])
-
-    #     # Update basic fields
-    #     instance.title = validated_data.get('title', instance.title)
-    #     instance.description = validated_data.get('description', instance.description)
-    #     instance.save()
-
-    #     # Handle images
-    #     # Delete existing images
-    #     instance.post_images.all().delete()
-        
-    #     # Create new images
-    #     for image in images:
-    #         PostImage.objects.create(post=instance, post_image=image)
-
-    #     # Handle hashtags
-    #     # Ensure hashtags are properly unpacked 
-    #     if raw_hashtags:
-    #         hashtag_names = json.loads(raw_hashtags[0]) if isinstance(raw_hashtags[0], str) else raw_hashtags
-
-    #     hashtag_objects = []
-    #     for hashtag_name in hashtag_names:
-    #         hashtag_name = hashtag_name.strip('#').lower()
-    #         hashtag, created = Hashtag.objects.get_or_create(name=hashtag_name)
-    #         hashtag_objects.append(hashtag)
-
-    #     # Update hashtags
-    #     instance.hashtags.set(hashtag_objects)
-
-    #     return instance
+   
     def update(self, instance, validated_data):
         print("validate data",validated_data)
         images = validated_data.pop('images', [])
         raw_hashtags = validated_data.pop('hashtags', [])
+        removed_image_ids = validated_data.pop('removed_images', []) 
+        
+         # Extract removed image IDs
+        if removed_image_ids:
+            instance.post_images.filter(id__in=removed_image_ids).delete()
 
         # Update fields on the instance
         instance.title = validated_data.get('title', instance.title)
@@ -127,7 +106,7 @@ class BlogUpdateSerializer(serializers.ModelSerializer):
 
         # Handle images
         if images:
-            # instance.post_images.all().delete()  # Remove old images
+            instance.post_images.all().delete()  # Remove old images
             for image in images:
                 PostImage.objects.create(post=instance, post_image=image)
 
