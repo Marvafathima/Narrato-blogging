@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { editBlogPost,deleteBlogPost } from '../app/slice/authSlice';
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -23,8 +24,9 @@ import {
   Avatar
 } from "@material-tailwind/react";
 import Layout from './Layout';
+import Swal from 'sweetalert2';
 import EditBlogDialog from './EditBlogDialog';
-
+import { toast } from 'react-toastify';
 const BlogDetailView = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const dispatch = useDispatch();
@@ -49,16 +51,85 @@ const BlogDetailView = () => {
   const handleNextImage = () => {
     setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
-
   const handleEditSubmit = async (formData) => {
-    // Handle the edit submission here
-    // Make API call to update the post
-    try {
-      // Your API call here
-      // await updatePost(post.id, formData);
-      // Refresh the post data or update local state
+        try {
+   
+      const result = await dispatch(editBlogPost({ formData, blogId: post.id })).unwrap();
+  
+      // Check response from API
+      if (result) {
+        toast.success(result.message || "Blog updated successfully");
+        navigate('/my-blog'); // Redirect after successful update
+      }
     } catch (error) {
+      // Handle API errors
+      if (error?.status === 400) {
+        toast.error("Validation error: Please check the input fields.");
+      } else if (error?.status === 404) {
+        toast.error("Blog not found or unauthorized.");
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
       console.error('Error updating post:', error);
+    }
+  };
+//   
+// const handleEditSubmit = async (formData) => {
+//     try {
+//       // Dispatch the edit action
+//       console.log(formData)
+  
+   
+//       const result = await dispatch(editBlogPost({ formData, blogId: post.id })).unwrap();
+  
+//       // Check response from API
+//       if (result) {
+//         toast.success(result.message || "Blog updated successfully");
+//         navigate('/my-blog'); // Redirect after successful update
+//       }
+//     } catch (error) {
+//       // Handle API errors
+//       if (error?.status === 400) {
+//         toast.error("Validation error: Please check the input fields.");
+//       } else if (error?.status === 404) {
+//         toast.error("Blog not found or unauthorized.");
+//       } else {
+//         toast.error("An unexpected error occurred.");
+//       }
+//       console.error('Error updating post:', error);
+//     }
+//   };
+  
+  const handleDeletePost = async (blogId) => {
+    try {
+      // SweetAlert confirmation
+      const { isConfirmed } = await Swal.fire({
+        title: 'Are you sure?',
+        text: "This action cannot be undone!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+      });
+  
+      if (isConfirmed) {
+        // Dispatch the delete action
+        const result = await dispatch(deleteBlogPost(blogId)).unwrap();
+  
+        // Check response from API
+        if (result) {
+          toast.success(result.message || "Blog deleted successfully");
+        }
+      }
+    } catch (error) {
+      // Handle API errors
+      if (error?.status === 404) {
+        toast.error("Blog not found or unauthorized.");
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
+      console.error('Error deleting post:', error);
     }
   };
 
@@ -145,7 +216,9 @@ const BlogDetailView = () => {
                       <Edit2 className="h-4 w-4" />
                       <Typography variant="small">Edit Post</Typography>
                     </MenuItem> */}
-                    <MenuItem className="flex items-center gap-2 text-red-500">
+                    <MenuItem 
+                      onClick={() => handleDeletePost(post.id)} 
+                    className="flex items-center gap-2 text-red-500">
                       <Trash className="h-4 w-4" />
                       <Typography variant="small">Delete Post</Typography>
                     </MenuItem>

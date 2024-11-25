@@ -65,35 +65,107 @@ class BlogCreateSerializer(serializers.ModelSerializer):
         blog.hashtags.set(hashtag_objects)
 
         return blog
+    
 
-    # def create(self, validated_data):
+class BlogUpdateSerializer(serializers.ModelSerializer):
+    images = serializers.ListField(
+        child=serializers.ImageField(),
+        required=False  # Optional for updates
+    )
+    hashtags = serializers.ListField(
+        child=serializers.CharField(),
+        required=False  # Optional for updates
+    )
+
+    class Meta:
+        model = Blog
+        fields = ['title', 'description', 'images', 'hashtags']
+
+    # def update(self, instance, validated_data):
+    #     # Extract data
+    #     print("my validated dataaa:\n\n\n\n",validated_data)
     #     images = validated_data.pop('images', [])
-    #     # hashtags = validated_data.pop('hashtags', [])
-    #     user = self.context['request'].user  # Get the user from the request
+    #     raw_hashtags = validated_data.pop('hashtags', [])
 
-    #     # Create the blog post
-    #     blog = Blog.objects.create(user=user, **validated_data)
+    #     # Update basic fields
+    #     instance.title = validated_data.get('title', instance.title)
+    #     instance.description = validated_data.get('description', instance.description)
+    #     instance.save()
 
-    #     # Create associated images
+    #     # Handle images
+    #     # Delete existing images
+    #     instance.post_images.all().delete()
+        
+    #     # Create new images
     #     for image in images:
-    #         PostImage.objects.create(post=blog, post_image=image)
+    #         PostImage.objects.create(post=instance, post_image=image)
 
-    #     raw_hashtags = validated_data.get('hashtags', [])
-                
-    #     # Convert stringified list into a proper Python list
-    #     if raw_hashtags and isinstance(raw_hashtags, list):
-    #         raw_hashtags = json.loads(raw_hashtags[0])  # Unpack nested stringified list
+    #     # Handle hashtags
+    #     # Ensure hashtags are properly unpacked 
+    #     if raw_hashtags:
+    #         hashtag_names = json.loads(raw_hashtags[0]) if isinstance(raw_hashtags[0], str) else raw_hashtags
 
-    #     for hashtag_name in raw_hashtags:
-    #         hashtag_name = hashtag_name.strip('#').lower()  # Clean up hashtag name
+    #     hashtag_objects = []
+    #     for hashtag_name in hashtag_names:
+    #         hashtag_name = hashtag_name.strip('#').lower()
     #         hashtag, created = Hashtag.objects.get_or_create(name=hashtag_name)
-    #         hashtag.posts.add(blog)  # Add the blog to the hashtag's many-to-many relationship
+    #         hashtag_objects.append(hashtag)
+
+    #     # Update hashtags
+    #     instance.hashtags.set(hashtag_objects)
+
+    #     return instance
+    def update(self, instance, validated_data):
+        print("validate data",validated_data)
+        images = validated_data.pop('images', [])
+        raw_hashtags = validated_data.pop('hashtags', [])
+
+        # Update fields on the instance
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.save()
+
+        # Handle images
+        if images:
+            instance.post_images.all().delete()  # Remove old images
+            for image in images:
+                PostImage.objects.create(post=instance, post_image=image)
+
+        # Handle hashtags
+        # if raw_hashtags:
+        #     raw_hashtags = json.loads(raw_hashtags[0])  # Unpack nested stringified list
+
+        # hashtag_objects = []
+        # for hashtag_name in raw_hashtags:
+        #     hashtag_name = hashtag_name.strip('#').lower()
+        #     hashtag, created = Hashtag.objects.get_or_create(name=hashtag_name)
+        #     hashtag_objects.append(hashtag)
+
+        # instance.hashtags.set(hashtag_objects)
+        # Handle hashtags
+        hashtag_objects = []
+        if raw_hashtags:
+            print("\n\n\n\nrawhashtags",raw_hashtags)
+            # Ensure raw_hashtags[0] is valid before decoding
+            if isinstance(raw_hashtags[0], str):
+                try:
+                    parsed_hashtags = json.loads(raw_hashtags[0])
+                except json.JSONDecodeError:
+                    parsed_hashtags = []  # Default to an empty list if JSON decoding fails
+            else:
+                parsed_hashtags = raw_hashtags  # Already parsed
+                print("parsed hastahgas",parsed_hashtags)
+            # Process each hashtag
+            for hashtag_name in raw_hashtags:
+                print(hashtag_name)
+
+                hashtag_name = hashtag_name.strip('#').lower()
+                hashtag, created = Hashtag.objects.get_or_create(name=hashtag_name)
+                hashtag_objects.append(hashtag)
+
+        # Set hashtags to the instance
+        instance.hashtags.set(hashtag_objects)
+        return instance
 
 
-    #     # Create or get hashtags and associate them with the blog
-    #     # for tag in hashtags:
-    #     #     hashtag, created = Hashtag.objects.get_or_create(name=tag.strip('#').lower())
-    #     #     blog.hashtags.add(hashtag)
-
-    #     return blog
         

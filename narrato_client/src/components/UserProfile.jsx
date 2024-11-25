@@ -109,20 +109,7 @@ const UserProfile = () => {
       images: [...prev.images, ...newImages]
     }));
   };
-  // const handleImageUpload = (e) => {
-  //   const files = Array.from(e.target.files);
-  //   const newImages = files.map(file => ({
-  //     file,
-  //     preview: URL.createObjectURL(file),
-  //     edited: false
-  //   }));
-
-  //   setNewPost(prev => ({
-  //     ...prev,
-  //     images: [...prev.images, ...newImages]
-  //   }));
-  // };
-
+  
   const handleEditImage = (index) => {
     setNewPost(prev => ({
       ...prev,
@@ -141,73 +128,7 @@ const UserProfile = () => {
     }));
   };
 
-//   const handleSaveEdit = () => {
-//     const canvas = document.createElement('canvas');
-//     const ctx = canvas.getContext('2d');
-//     const image = document.querySelector('.crop-image');
-  
-//     if (!image || !crop) return;
-  
-//     canvas.width = crop.width;
-//     canvas.height = crop.height;
-  
-//     // ... your existing transform code ...
-//     ctx.save();
-//     ctx.translate(canvas.width / 2, canvas.height / 2);
-//     ctx.rotate((rotation * Math.PI) / 180);
-//     ctx.scale(scale, scale);
-//     ctx.translate(-canvas.width / 2, -canvas.height / 2);
-    
-//     ctx.drawImage(
-//       image,
-//       crop.x,
-//       crop.y,
-//       crop.width,
-//       crop.height,
-//       0,
-//       0,
-//       crop.width,
-//       crop.height
-//     );
-    
-//     ctx.restore();
 
-   
-    
-//     // Convert the canvas to a Blob instead of a data URL
-//     canvas.toBlob((blob) => {
-//       const editedFile = new File([blob], 'edited-image.jpg', { type: 'image/jpeg' });
-//       const editedPreview = URL.createObjectURL(blob);
-      
-//       setNewPost(prev => ({
-//         ...prev,
-//         images: prev.images.map((img, idx) => 
-//           idx === prev.currentEditIndex 
-//             ? {
-//                 file: editedFile, // Save the edited file
-//                 preview: editedPreview,
-//                 edited: true
-//               }
-//             : img
-//         ),
-//         currentEditIndex: null
-//       }));
-//     }, 'image/jpeg');
-    
-//     setEditMode(false);
-//   };
-
-// // Add cleanup on unmount
-// useEffect(() => {
-//   return () => {
-//     // Cleanup object URLs when component unmounts
-//     newPost.images.forEach(image => {
-//       if (image.preview) {
-//         URL.revokeObjectURL(image.preview);
-//       }
-//     });
-//   };
-// }, [newPost.images]);
 
 const handleSaveEdit = () => {
   const canvas = document.createElement('canvas');

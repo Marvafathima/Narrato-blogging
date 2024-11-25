@@ -108,17 +108,22 @@ const EditBlogDialog = ({ open, handler, post, onSubmit }) => {
     // Create FormData and append all the necessary data
     const formData = new FormData();
     formData.append('description', editPost.description);
+    formData.append('title', editPost.description.split('\n')[0]);
+    
     editPost.hashtags.forEach(tag => {
-      formData.append('hashtags[]', tag);
+      formData.append('hashtags', tag);
     });
     
     // Only append images that have associated files (new or modified images)
     editPost.images.forEach((img, index) => {
       if (img.file) {
-        formData.append(`images[]`, img.file);
+        console.log("imgae fiel present")
+        formData.append(`images`, img.file);
       }
     });
-
+    for (let pair of formData.entries()) {
+      console.log("form data in form",pair[0], pair[1]); // This will show the actual content
+    }
     // Call the onSubmit prop with the formData
     onSubmit(formData);
     handler(); // Close dialog

@@ -68,7 +68,7 @@ export const createBlogPost = createAsyncThunk(
       const { accessToken } = getState().auth;
 
       const response = await axios.post(
-        `${BASE_URL}blog/create/`,
+        `${BASE_URL}blog/manage/`,
         formData,
         {
           headers: {
@@ -84,6 +84,49 @@ export const createBlogPost = createAsyncThunk(
     }
   }
 ); 
+
+export const editBlogPost = createAsyncThunk(
+  'blog/editPost',
+  async ({ blogId, formData }, { getState, rejectWithValue }) => {
+    try {
+      const { accessToken } = getState().auth;
+
+      const response = await axios.put(
+        `${BASE_URL}blog/manage/${blogId}/`,
+        formData,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
+
+export const deleteBlogPost = createAsyncThunk(
+  'blog/deletePost',
+  async (blogId, { getState, rejectWithValue }) => {
+    try {
+      const { accessToken } = getState().auth;
+
+      await axios.delete(`${BASE_URL}blog/manage/${blogId}/`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+
+      return blogId; // Return blogId to update the UI
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'An error occurred');
+    }
+  }
+);
 
 
 export const fetchUserBlogs = createAsyncThunk(
