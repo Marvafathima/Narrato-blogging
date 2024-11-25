@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Heart, MessageCircle } from 'lucide-react';
+import BlogDetailView from './BlogDetailView';
+import { Dialog,IconButton } from '@material-tailwind/react';
+import { X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const UserPostsGrid = ({ posts = [], postsPerPage = 9 }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedPost, setSelectedPost] = useState(null);
 
   // Calculate pagination
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
   const totalPages = Math.ceil(posts.length / postsPerPage);
-
+  const navigate = useNavigate();
+  const handlePostClick = (post) => {
+    navigate(`/post/${post.id}`,{ state: { post } }); 
+   
+  };
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -45,6 +54,7 @@ const UserPostsGrid = ({ posts = [], postsPerPage = 9 }) => {
           <div
             key={post.id}
             className="bg-white rounded-lg shadow-md overflow-hidden group relative"
+            onClick={() => handlePostClick(post)}
           >
             {/* Post Image */}
             <div className="aspect-square relative">
@@ -60,10 +70,7 @@ const UserPostsGrid = ({ posts = [], postsPerPage = 9 }) => {
                     <Heart className="w-6 h-6" />
                     <span>{post.likes}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <MessageCircle className="w-6 h-6" />
-                    <span>Comment</span>
-                  </div>
+               
                 </div>
               </div>
             </div>
@@ -125,6 +132,41 @@ const UserPostsGrid = ({ posts = [], postsPerPage = 9 }) => {
           </button>
         </div>
       )}
+
+{/* 
+ <Dialog
+      size="xl"
+      open={selectedPost !== null}
+      handler={() => setSelectedPost(null)}
+      className="bg-transparent shadow-none"
+    >
+      <IconButton
+        variant="text"
+        color="white"
+        size="sm"
+        onClick={() => setSelectedPost(null)}
+        className="!absolute right-4 top-4 z-10"
+      >
+        <X className="h-6 w-6" />
+      </IconButton>
+      {selectedPost && (
+        <BlogDetailView
+          post={selectedPost}
+          onClose={() => setSelectedPost(null)}
+          onDelete={() => {
+            if (window.confirm('Are you sure you want to delete this post?')) {
+            //   dispatch(deleteBlogPost(selectedPost.id));
+              setSelectedPost(null);
+            }
+          }}
+          onEdit={() => {
+            navigate(`/edit-post/${selectedPost.id}`);
+          }}
+        />
+      )}
+    </Dialog> */}
+
+
     </div>
   );
 };
