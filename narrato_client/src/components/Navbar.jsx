@@ -11,7 +11,7 @@ import { useSelector,useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectIsAuthenticated,selectCurrentUser,logout } from "../app/slice/authSlice";
 import { toast } from "react-toastify";
-import { fetchBlogs } from "../app/slice/blogSlice";
+import { fetchBlogs,resetBlogState } from "../app/slice/blogSlice";
 export function NavbarWithSearch() {
   const [openNav, setOpenNav] = React.useState(false);
   const dispatch = useDispatch();
@@ -19,7 +19,16 @@ export function NavbarWithSearch() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
     const user = useSelector(selectCurrentUser);
     const handleExplore=()=>{
-      dispatch(fetchBlogs())
+      dispatch(resetBlogState());
+    
+    // Fetch initial blogs
+    dispatch(fetchBlogs({ 
+      page: 1, 
+      pageSize: 10 
+    }));
+
+    // Navigate to explore page
+    navigate('/explore');
     }
     const handleLogout = () => {
       dispatch(logout());
