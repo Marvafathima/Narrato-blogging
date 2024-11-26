@@ -5,7 +5,7 @@ import { logout } from '../app/slice/authSlice';
 import { store } from '../app/store';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: 'https://api.narrato.fun',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -42,7 +42,7 @@ api.interceptors.response.use(
       
       if (refreshToken) {
         try {
-          const response = await axios.post('http://localhost:8000/api/token/refresh/', {
+          const response = await axios.post('https://api.narrato.fun/api/token/refresh/', {
             refresh: refreshToken
           });
           
