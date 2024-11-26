@@ -260,7 +260,7 @@ const handlePostSubmit = async () => {
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="relative">
               <Avatar 
-                src={`${BASE_URL}${userDetails?.profile_pic}`} 
+                src={`${BASE_URL}profile_pics/${userDetails?.profile_pic}`} 
                 alt="Profile" 
                 size="xxl"
                 className="border-4 border-deep_orange-400"
