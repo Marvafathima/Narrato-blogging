@@ -13,6 +13,7 @@ import { UserPostGridPage } from './components/UserPostGridPage';
 import BlogDetailView from './components/BlogDetailView';
 import 'react-toastify/dist/ReactToastify.css';
 import InfiniteBlogList from './components/InfiniteBlogList';
+import LandingPage from './components/LandingPage';
 function App() {
 
   return (
@@ -21,7 +22,7 @@ function App() {
        <BrowserRouter>
        <Routes>
        <Route path="nav/" element={<NavbarWithSearch/>}></Route>
-       <Route path="" element={<Layout/>}></Route>
+       <Route path="" element={<LandingPage/>}></Route>
        <Route path="/signup" element={<ProtectedRoute><Signup/></ProtectedRoute>}></Route>
        <Route path="/login" element={<ProtectedRoute><Login/></ProtectedRoute>}></Route>
        <Route path="/dashboard" element={<HomeProtectedRoute><UserProfile/></HomeProtectedRoute>}></Route>
