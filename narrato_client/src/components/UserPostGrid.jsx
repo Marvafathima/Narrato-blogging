@@ -62,7 +62,7 @@ const UserPostsGrid = ({ posts = [], postsPerPage = 9 }) => {
                 // src={post.post_images[0]?.post_image || `/api/placeholder/400/400`}
                 src={
                   post.post_images[0]?.post_image
-                    ? `${BASE_URL}${post.post_images[0].post_image}` 
+                    ? `${post.post_images[0].post_image}` 
                     : `/api/placeholder/400/400`
                 }
                 alt={post.title}
