@@ -6,6 +6,9 @@ from .serializers import BlogSerializer, BlogCreateSerializer,BlogUpdateSerializ
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import generics, permissions
+from django.db.models import Q
 class BlogCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -58,4 +61,51 @@ class UserBlogsView(ListAPIView):
         # Fetch blogs belonging to the requesting user
         if not self.request.user.is_authenticated:
             raise AuthenticationFailed(detail="Authentication failed.Please login again.")
+        return Blog.objects.filter(user=self.request.user).order_by('-created_at')
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 10  # Number of items per page
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+class BlogListView(generics.ListAPIView):
+    """
+    API endpoint that allows blogs to be viewed in a paginated manner.
+    Fetches all blogs ordered by most recent, irrespective of user.
+    """
+    serializer_class = BlogSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [IsAuthenticated]  # Or adjust based on your auth requirements
+
+    def get_queryset(self):
+        # Order blogs by most recent first
+        queryset = Blog.objects.all().order_by('-created_at')
+        
+        # Optional: Add filtering capabilities
+        search_query = self.request.query_params.get('search', None)
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) | 
+                Q(description__icontains=search_query)
+            )
+        
+        # Optional: Filter by hashtags
+        hashtag = self.request.query_params.get('hashtag', None)
+        if hashtag:
+            queryset = queryset.filter(hashtags__name__iexact=hashtag)
+        print("\n\n\n\n\n\nquery settt",queryset)
+        return queryset
+
+# If you want a view for user-specific blogs
+class UserBlogListView(generics.ListAPIView):
+    """
+    API endpoint to fetch blogs for a specific user
+    """
+    serializer_class = BlogSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        # Fetch blogs only for the authenticated user
         return Blog.objects.filter(user=self.request.user).order_by('-created_at')

@@ -11,19 +11,22 @@ import { useSelector,useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectIsAuthenticated,selectCurrentUser,logout } from "../app/slice/authSlice";
 import { toast } from "react-toastify";
-
+import { fetchBlogs } from "../app/slice/blogSlice";
 export function NavbarWithSearch() {
   const [openNav, setOpenNav] = React.useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector(selectIsAuthenticated);
     const user = useSelector(selectCurrentUser);
-
+    const handleExplore=()=>{
+      dispatch(fetchBlogs())
+    }
     const handleLogout = () => {
       dispatch(logout());
       toast.success("logged out successfully")
       navigate('/');
   };
+
 
   React.useEffect(() => {
     window.addEventListener(
@@ -35,7 +38,7 @@ export function NavbarWithSearch() {
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
      {isAuthenticated ==true ? (<>
-      {/* <Typography
+      <Typography
         as="li"
         variant="small"
         color="blue-gray"
@@ -54,10 +57,12 @@ export function NavbarWithSearch() {
           />
         </svg>
  
-        <a href="#" className="flex items-center font-extralight text-lg">
+        <a href="/explore" className="flex items-center font-extralight text-lg"
+        onClick={()=>handleExplore()}
+        >
           Explore
         </a>
-      </Typography> */}
+      </Typography>
       <Typography
         as="li"
         variant="small"

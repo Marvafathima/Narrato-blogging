@@ -12,6 +12,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { UserPostGridPage } from './components/UserPostGridPage';
 import BlogDetailView from './components/BlogDetailView';
 import 'react-toastify/dist/ReactToastify.css';
+import InfiniteBlogList from './components/InfiniteBlogList';
 function App() {
 
   return (
@@ -26,6 +27,7 @@ function App() {
        <Route path="/dashboard" element={<HomeProtectedRoute><UserProfile/></HomeProtectedRoute>}></Route>
         <Route path="/my-blog" element={<HomeProtectedRoute><UserPostGridPage/></HomeProtectedRoute>}></Route>
         <Route path="/post/:id" element={<HomeProtectedRoute><BlogDetailView/></HomeProtectedRoute>}></Route>
+        <Route path="/explore" element={<HomeProtectedRoute><InfiniteBlogList/></HomeProtectedRoute>}></Route>
        
        
         </Routes></BrowserRouter>  
