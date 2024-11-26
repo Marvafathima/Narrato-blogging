@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const UserPostsGrid = ({ posts = [], postsPerPage = 9 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPost, setSelectedPost] = useState(null);
-
+  const BASE_URL="https://api.narrato.fun";
   // Calculate pagination
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -59,7 +59,12 @@ const UserPostsGrid = ({ posts = [], postsPerPage = 9 }) => {
             {/* Post Image */}
             <div className="aspect-square relative">
               <img
-                src={post.post_images[0]?.post_image || `/api/placeholder/400/400`}
+                // src={post.post_images[0]?.post_image || `/api/placeholder/400/400`}
+                src={
+                  post.post_images[0]?.post_image
+                    ? `${BASE_URL}${post.post_images[0].post_image}` 
+                    : `/api/placeholder/400/400`
+                }
                 alt={post.title}
                 className="w-full h-full object-cover"
               />
