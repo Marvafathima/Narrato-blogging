@@ -4,7 +4,7 @@ import { store } from './store';
 import { logout } from './slice/authSlice';
 const createAxiosInstance = () => {
   const api = axios.create({
-    baseURL: 'https://api.narrato.fun',
+    baseURL: 'https://api.narrato.fun/',
     headers: {
       'Content-Type': 'application/json',
     },
