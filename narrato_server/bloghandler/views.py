@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Blog
+from .models import Blog,Hashtag
 from .serializers import BlogSerializer, BlogCreateSerializer,BlogUpdateSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView
@@ -97,15 +97,51 @@ class BlogListView(generics.ListAPIView):
         print("\n\n\n\n\n\nquery settt",queryset)
         return queryset
 
-# If you want a view for user-specific blogs
-class UserBlogListView(generics.ListAPIView):
+
+class BlogSearchListView(generics.ListAPIView):
     """
-    API endpoint to fetch blogs for a specific user
+    Comprehensive search endpoint for blogs
+    Supports:
+    - Search across title, description, username
+    - Hashtag filtering
+    - Pagination
     """
     serializer_class = BlogSerializer
     pagination_class = StandardResultsSetPagination
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Fetch blogs only for the authenticated user
-        return Blog.objects.filter(user=self.request.user).order_by('-created_at')
+        # Get query parameters
+        search_query = self.request.query_params.get('search', '')
+        hashtag_query = self.request.query_params.get('hashtag', '')
+
+        # Start with all blogs
+        queryset = Blog.objects.all().order_by('-created_at')
+
+        # Hashtag search (exact match)
+        if hashtag_query:
+            queryset = queryset.filter(hashtags__name__iexact=hashtag_query)
+        
+        # General search (if no hashtag)
+        elif search_query:
+            # Complex search across multiple fields
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) |  # Search in title
+                Q(description__icontains=search_query) |  # Search in description
+                Q(user__username__icontains=search_query)  # Search in username
+            )
+
+        return queryset.distinct()
+# If you want a view for user-specific blogs
+# class UserBlogListView(generics.ListAPIView):
+#     """
+#     API endpoint to fetch blogs for a specific user
+#     """
+#     serializer_class = BlogSerializer
+#     pagination_class = StandardResultsSetPagination
+#     permission_classes = [permissions.IsAuthenticated]
+
+#     def get_queryset(self):
+#         # Fetch blogs only for the authenticated user
+#         return Blog.objects.filter(user=self.request.user).order_by('-created_at')
+    

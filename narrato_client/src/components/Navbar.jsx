@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Navbar,
   MobileNav,
@@ -16,8 +16,46 @@ export function NavbarWithSearch() {
   const [openNav, setOpenNav] = React.useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
   const isAuthenticated = useSelector(selectIsAuthenticated);
     const user = useSelector(selectCurrentUser);
+    const handleSearch = () => {
+     // Prevent form submission
+      
+      // Trim and validate search query
+      const trimmedQuery = searchQuery.trim();
+      
+      // Reset blog state before new search
+      dispatch(resetBlogState());
+  
+      // Determine search type
+      let finalQuery = trimmedQuery;
+      let isHashtagSearch = false;
+  
+      // Check if it's a hashtag search
+      if (trimmedQuery.startsWith('#')) {
+        isHashtagSearch = true;
+        // Remove the # for backend search
+        finalQuery = trimmedQuery.slice(1);
+      }
+  
+      // Dispatch search action
+      dispatch(fetchBlogs({ 
+        page: 1, 
+        pageSize: 10, 
+        ...(isHashtagSearch ? { hashtag: finalQuery } : { search: finalQuery })
+      }));
+  
+      // Navigate to explore page
+      navigate('/explore');
+    };
+  
+
+
+
+
+
+
     const handleExplore=()=>{
       dispatch(resetBlogState());
     
@@ -176,6 +214,8 @@ export function NavbarWithSearch() {
             <Input
               type="search"
               placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               containerProps={{
                 className: "min-w-[288px]",
               }}
@@ -213,7 +253,7 @@ export function NavbarWithSearch() {
              
           <Button 
   variant="outlined" 
-  
+  onClick={()=>handleSearch()}
   size="md" 
   className="mt-1 rounded-lg sm:mt-0
     border-orange-100

@@ -9,7 +9,8 @@ import {
 import { 
   Heart, 
   MessageCircle, 
-  MoreVertical 
+  MoreVertical ,
+  X 
 } from 'lucide-react';
 import { fetchBlogs, resetBlogState } from '../app/slice/blogSlice'; // Adjust import path as needed
 import Layout from './Layout';
@@ -40,7 +41,8 @@ const InfiniteBlogList = () => {
     blogs = [], 
     loading = false, 
     error = null,
-    pagination 
+    pagination,
+    searchQuery
   } = useSelector(state => state.blog);
 
   // Ref for intersection observer
@@ -74,35 +76,72 @@ const InfiniteBlogList = () => {
     // Fetch blogs
     dispatch(fetchBlogs({ 
       page, 
-      pageSize: 10 
+      pageSize: 10,
+      ...(searchQuery.startsWith('#') 
+        ? { hashtag: searchQuery.slice(1) } 
+        : { search: searchQuery }
+      )
     }));
-  }, [page, dispatch]);
+  }, [page, dispatch, searchQuery]);
 
+// Clear search handler
+const handleClearSearch = () => {
+    dispatch(resetBlogState());
+    setPage(1);
+  };
   // Handler for navigating to blog detail
   const handleBlogClick = (post) => {
     navigate('/blog-detail', { state: { post } });
   };
 
   // Render error state
-  if (error) {
+//   if (error) {
+//     return (
+//       <Layout>
+//         <div className="text-center text-red-500 p-4">
+//           Failed to load blogs. Please try again later.
+//           <button 
+//             onClick={() => {
+//               setPage(1);
+//               dispatch(fetchBlogs({ page: 1, pageSize: 10 }));
+//             }} 
+//             className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
+//           >
+//             Retry
+//           </button>
+//         </div>
+//       </Layout>
+//     );
+//   }
+if (error || (blogs.length === 0 && !loading)) {
     return (
       <Layout>
-        <div className="text-center text-red-500 p-4">
-          Failed to load blogs. Please try again later.
-          <button 
-            onClick={() => {
-              setPage(1);
-              dispatch(fetchBlogs({ page: 1, pageSize: 10 }));
-            }} 
-            className="ml-2 px-4 py-2 bg-blue-500 text-white rounded"
-          >
-            Retry
-          </button>
+        <div className="text-center p-4">
+          {error ? (
+            <div className="text-red-500">
+              Failed to load blogs. Please try again later.
+            </div>
+          ) : (
+            <div className="text-gray-500">
+              {searchQuery ? (
+                <>
+                  <p>No results found for "{searchQuery}"</p>
+                  <button 
+                    onClick={handleClearSearch}
+                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded flex items-center mx-auto"
+                  >
+                    <X className="mr-2 h-5 w-5" /> Clear Search
+                  </button>
+                </>
+              ) : (
+                "No blogs found"
+              )}
+            </div>
+          )}
         </div>
       </Layout>
     );
   }
-
   return (
     <Layout>
       <div className="max-w-4xl mx-auto px-4">
@@ -112,6 +151,21 @@ const InfiniteBlogList = () => {
             No blogs found. Check your data source.
           </div>
         )}
+          {/* Search Query Display */}
+          {searchQuery && (
+          <div className="mb-4 flex items-center justify-between bg-blue-50 p-3 rounded">
+            <Typography variant="small" className="text-blue-800">
+              Showing results for: "{searchQuery}"
+            </Typography>
+            <button 
+              onClick={handleClearSearch}
+              className="text-blue-500 hover:text-blue-700 flex items-center"
+            >
+              <X className="h-5 w-5 mr-1" /> Clear
+            </button>
+          </div>
+        )}
+
 
         {blogs.map((post, index) => {
           // Check if this is the last element to attach ref
