@@ -53,7 +53,7 @@ const LandingPage = () => {
              onClick={()=>handleNavigate()}
               variant="outlined" 
               color="deep-orange" 
-              className="border-deep_orange-500 text-deep_orange-500"
+              className="border-ocean_green-50 text-ocean_green-50"
             >
               Learn More
             </Button>
