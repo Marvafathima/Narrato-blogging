@@ -20,6 +20,7 @@ import { createBlogPost,fetchUserDetails, selectAuthError, selectAuthLoading, se
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import 'react-image-crop/dist/ReactCrop.css';
+import { BASE_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -259,7 +260,7 @@ const handlePostSubmit = async () => {
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="relative">
               <Avatar 
-                src={userDetails?.profile_pic} 
+                src={`${BASE_URL}${userDetails?.profile_pic}`} 
                 alt="Profile" 
                 size="xxl"
                 className="border-4 border-deep_orange-400"
